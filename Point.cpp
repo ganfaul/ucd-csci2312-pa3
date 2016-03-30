@@ -8,6 +8,11 @@
 
 using std::sqrt;
 using std::pow;
+using std::ostream;
+using std::istream;
+using std::string;
+using std::stringstream;
+using std::count;
 
 #include"Point.h"
 #include"Exceptions.h"
@@ -15,7 +20,7 @@ namespace Clustering {
 
 
     unsigned int Point::__idGen = 0;
-
+    const char Point::POINT_VALUE_DELIM = ',';
 
     // ************
     // CONSTRUCTORS
@@ -294,7 +299,7 @@ namespace Clustering {
         return (rhs <= lhs);
     }
 
-    std::ostream &operator<<(std::ostream &out, const Point &p) {
+    ostream &operator<<(std::ostream &out, const Point &p) {
         out << p.getValue(0);
         for (int i = 1; i < p.getDims(); i++) {
             out << ", " << p.getValue(i);
@@ -302,14 +307,21 @@ namespace Clustering {
         return out;
     }
 
-    std::istream &operator>>(std::istream &in, Point &p) {
-        double value;
-        std::string pointString;
-        for (int i = 0; i < p.__dim; i++) {
-            in >> pointString;
-            std::stringstream inputStringStream(pointString);
-            inputStringStream >> value;
-            p.__values[i] = value;
+    istream &operator>>(std::istream &in, Point &p) {
+        string string1;
+        getline(in, string1);
+        stringstream stream1(string1);
+        int dim1 = count(string1.begin(), string1.end(), p.POINT_VALUE_DELIM);
+        dim1++;
+        if (p.getDims() == dim1){
+            for (int i = 0; i < p.getDims(); i++) {
+                string pointVal;
+                getline(stream1, pointVal, ',');
+                stringstream stream2(pointVal);
+                stream2 >> p.__values[i];
+            }
+        } else {
+            throw DimensionalityMismatchEx(p.getDims(), dim1);
         }
         return in;
     }

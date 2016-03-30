@@ -1552,10 +1552,10 @@ void test_cluster_assignment(ErrorContext &ec, unsigned int numRuns) {
             c1.add(p1); c1.add(p2); c1.add(p3);
             Cluster c2(10);
             // add some other points
-            c2.add(Point(10));
-            c2.add(Point(10));
-            c2.add(Point(10));
 
+            c2.add(Point(10));
+            c2.add(Point(10));
+            c2.add(Point(10));
             c2 = c1;
 
             pass = (c1 == c2);

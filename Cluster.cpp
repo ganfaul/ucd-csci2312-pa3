@@ -31,11 +31,13 @@ namespace Clustering {
     //bool Cluster::__in(const Point &p) const { }
 
     Cluster::Centroid::Centroid(unsigned int d, const Cluster &c) : __c(c), __p(d) {
-        if(__c.__size == 0) {
-            __valid == false;
-            toInfinity();
-        }
         __dimensions = d;
+        if (__c.__size != 0) {
+            return;
+        } else {
+            toInfinity();
+            __valid = false;
+        }
     }
 
     const Point Cluster::Centroid::get() const {
@@ -128,39 +130,24 @@ namespace Clustering {
 
     // Operator Overload=
     Cluster &Cluster::operator=(const Cluster &clust) {
-        if (this != &clust) {
-            if(__points) {
-                LNodePtr delPtr = __points;
-                LNodePtr delHelp = delPtr->next;
-                for (int i = 0; i < __size; i++) {
-                    delete delPtr;
-                    delPtr = delHelp;
-                    if (delPtr->next) {
-                        delHelp = delPtr->next;
-                    }
+        if(__points) {
+            LNodePtr delPtr = __points;
+            LNodePtr delHelp = delPtr->next;
+            for (int i = 0; i < __size; i++) {
+                delete delPtr;
+                delPtr = delHelp;
+                if (delPtr->next) {
+                    delHelp = delPtr->next;
                 }
             }
-            __points = nullptr;
-            __size = 0;
-
-            __size = clust.getSize();
-            if (__size != 0) {
-                __points = new LNode(clust.__points->point, nullptr);
-
-                LNodePtr cpyPtr = __points;
-                LNodePtr cpyHelp = cpyPtr;
-                LNodePtr nullCheck = clust.__points->next;
-                while (nullCheck) {
-                    cpyPtr = new LNode(nullCheck->point, nullptr);
-                    cpyHelp->next = cpyPtr;
-                    cpyHelp = cpyPtr;
-                    nullCheck = nullCheck->next;
-                }
-            } else {
-                __points = nullptr;
-            }
-            centroid.compute();
         }
+        __points = nullptr;
+        __size = 0;
+        for (int i = 0; i < clust.getSize(); i++) {
+            add(clust[i]);
+        }
+        __id = clust.__id;
+        centroid.compute();
         return *this;
     }
 
@@ -206,80 +193,73 @@ namespace Clustering {
             if (!__points) {
                 __points = addPtr;
                 __size++;
+                centroid.setValid(false);
                 return;
-            } else if (!__points->next) {
-                if (addPtr->point < __points->point) {
-                    addPtr->next = __points;
-                    __points = addPtr;
-                    __size++;
-                    return;
-                } else {
-                    __points->next = addPtr;
-                    __size++;
+            } else {
+                if (contains(p)) {
                     return;
                 }
-            }
-            LNodePtr addHelp = __points->next;
-            LNodePtr holder = __points;
-            if (addPtr->point < __points->point) {
-                __points = addPtr;
-                addPtr->next = holder;
-                __size++;
-                return;
-            } else if (addPtr->point < addHelp->point) {
-                holder->next = addPtr;
-                addPtr->next = addHelp;
-                __size++;
-                return;
-            }
-            while (addHelp->next != nullptr) {
-                if (addPtr->point < addHelp->point) {
-                    holder = addPtr;
-                    addPtr->next = holder;
-                    __size++;
-                    return;
+                centroid.setValid(false);
+                LNodePtr curr = __points;
+                LNodePtr previous = nullptr;
+                while(curr) {
+                    if (p < curr->point) {
+                        if (previous != nullptr) {
+                            previous->next = new LNode(p, curr);
+                            __size++;
+                            return;
+                        } else {
+                            __points = new LNode(p, curr);
+                            __size++;
+                            return;
+                        }
+
+                    }
+                    previous = curr;
+                    curr = curr->next;
                 }
-                addHelp = addHelp->next;
-                holder = holder->next;
+                previous->next = new LNode(p, nullptr);
+                __size++;
             }
-            addHelp->next = addPtr;
-            __size++;
         } else {
             throw DimensionalityMismatchEx(__dimensionality, p.getDims());
         }
     }
 
     const Point &Cluster::remove(const Point &p) {
-        if(__dimensionality != p.getDims()) {
-            throw DimensionalityMismatchEx(__dimensionality, p.getDims());
-        }
-        LNodePtr remPtr = __points;
-        if (__points->point != p) {
-            LNodePtr remHelp = remPtr;
-            remPtr = remPtr->next;
-
-            for (int i = 0; i < __size; i++) {
-                if (remPtr->point == p) {
-                    if (remPtr->next == nullptr) {
-                        remHelp->next = nullptr;
-                        delete remPtr;
-                        __size--;
-                    } else {
-                        remHelp->next = remPtr->next;
+        if(__dimensionality == p.getDims()) {
+            if(!contains(p)) {
+                return p;
+            } else {
+                centroid.setValid(false);
+                LNodePtr remPtr = __points;
+                LNodePtr remHelp = nullptr;
+                while (remPtr) {
+                    if (remPtr->point == p) {
+                        if (remHelp) {
+                            remHelp->next = remPtr->next;
+                            delete remPtr;
+                            __size--;
+                            return p;
+                        } else {
+                            if(__size >= 2) {
+                                __points = remPtr->next;
+                            } else {
+                                __points = nullptr;
+                            }
+                            delete remPtr;
+                            __size--;
+                            return p;
+                        }
                     }
+                    remHelp = remPtr;
+                    remPtr = remPtr->next;
                 }
-                remPtr = remPtr->next;
-                remHelp = remHelp->next;
+                return p;
             }
         } else {
-            remPtr = __points;
-            if (__size > 0) {
-                __points = __points->next;
-                --__size;
-            }
-            delete remPtr;
+            throw DimensionalityMismatchEx(__dimensionality, p.getDims());
         }
-        return p;
     }
 
     bool Cluster::contains(const Point &p) const {
@@ -371,9 +351,9 @@ namespace Clustering {
 
     // Members: Compound assignment (Point argument)
     Cluster &Cluster::operator+=(const Point &p) {
-        if (!(this->contains(p))) {
+
             add(p);
-        }
+
         return *this;
     }
 
