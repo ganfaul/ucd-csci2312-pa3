@@ -2,7 +2,7 @@
 //
 // Created by Ivo Georgiev on 11/22/15.
 //
-/*
+
 #ifndef CLUSTERING_KMEANS_H
 #define CLUSTERING_KMEANS_H
 
@@ -54,4 +54,3 @@ namespace Clustering {
 
 
 #endif //CLUSTERING_KMEANS_H
-*/

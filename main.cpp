@@ -58,9 +58,9 @@ int main() {
     test_cluster_SAO(ec, NumIters);
     test_cluster_centroid(ec, NumIters);
     test_cluster_id(ec, NumIters);
-    test_cluster_initselection(ec, NumIters);
-    /*test_cluster_IO(ec, NumIters);
-
+    //test_cluster_initselection(ec, NumIters);
+    test_cluster_IO(ec, NumIters);
+/*
     // kmeans tests
     test_kmeans_smoketest(ec);
     test_kmeans_run(ec, NumIters);

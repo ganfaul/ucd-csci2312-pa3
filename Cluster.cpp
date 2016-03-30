@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <sstream>
 #include "Cluster.h"
@@ -20,7 +21,7 @@ namespace Clustering {
     typedef Point * PointPtr;
 
     unsigned int Cluster::__idGenerator = 0;
-    const char POINT_Clsuter_ID_DELIM = ':';
+    const char POINT_CLUSTER_ID_DELIM = ':';
 
     LNode::LNode(const Point & p, LNodePtr n) : point(p), next(n){ }
 
@@ -93,7 +94,7 @@ namespace Clustering {
     }
 
     Cluster::Cluster(unsigned int d) : centroid(d, *this) {
-        __id = __idGenerator++;
+        __id = ++__idGenerator;
         __size = 0;
         __points = NULL;
         __dimensionality = d;
@@ -124,6 +125,7 @@ namespace Clustering {
             }
 
             centroid.compute();
+            __id = clust.__id;
         }
 
     }
@@ -146,8 +148,9 @@ namespace Clustering {
         for (int i = 0; i < clust.getSize(); i++) {
             add(clust[i]);
         }
-        __id = clust.__id;
+
         centroid.compute();
+        __id = clust.__id;
         return *this;
     }
 
@@ -405,11 +408,9 @@ namespace Clustering {
 
     // Friends: IO
     std::ostream &operator<<(std::ostream &out, const Cluster &c) {
-        LNodePtr outPtr = c.__points;
-        while (outPtr) {
-            out << outPtr->point;
-            out << std::endl;
-            outPtr = outPtr->next;
+        out << std::setprecision(20);
+        for (int i = 0; i < c.getSize(); i++) {
+            out << c[i] << " " << ":" << " " << c.__id << endl;
         }
         return out;
     }
@@ -419,7 +420,7 @@ namespace Clustering {
             string string1;
             getline(in, string1);
             int dim_ty = c.getDimensionality();
-            if (string1.size() > dim_ty) {
+            if (string1.length() > dim_ty) {
                 Point newPoint(dim_ty);
                 stringstream stringstream1(string1);
 
