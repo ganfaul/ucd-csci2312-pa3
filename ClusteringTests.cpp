@@ -2879,7 +2879,7 @@ void test_cluster_IO(ErrorContext &ec, unsigned int numRuns) {
 }
 
 
-
+/*
 // - - - - - - - - - - K M E A N S - - - - - - - - - -
 
 // Smoketest: constructor, destructor, loading points
@@ -3400,3 +3400,4 @@ void test_kmeans_toomanyclusters(ErrorContext &ec, unsigned int numRuns) {
 //        ec.result(pass);
     }
 }
+*/
