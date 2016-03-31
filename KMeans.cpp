@@ -12,7 +12,7 @@
 #include "Exceptions.h"
 
 namespace Clustering {
-    KMeans::KMeans(unsigned int dim, unsigned int k, std::string filename, unsigned int maxIter) {
+    KMeans::KMeans(unsigned int dim, unsigned int k, std::string filename, unsigned int maxIter) { 
         if(k != 0) {
             __iFileName = filename;
             std::ifstream file(__iFileName);
