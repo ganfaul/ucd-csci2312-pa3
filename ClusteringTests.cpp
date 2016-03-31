@@ -2879,7 +2879,7 @@ void test_cluster_IO(ErrorContext &ec, unsigned int numRuns) {
 }
 
 
-/*
+
 // - - - - - - - - - - K M E A N S - - - - - - - - - -
 
 // Smoketest: constructor, destructor, loading points
@@ -2892,10 +2892,11 @@ void test_kmeans_smoketest(ErrorContext &ec) {
 
     pass = true;
     for (int i = 0; i < 10; i ++) {
-
+        std::cout << std:: endl << "HELLO" << std::endl;
         KMeans kmeans(5, 3, "points4.csv", 20);
-
+        std::cout << std:: endl << "Goodbye" << std::endl;
     }
+
     ec.result(pass);
 
     ec.DESC("empty filename");
@@ -3400,4 +3401,3 @@ void test_kmeans_toomanyclusters(ErrorContext &ec, unsigned int numRuns) {
 //        ec.result(pass);
     }
 }
-*/

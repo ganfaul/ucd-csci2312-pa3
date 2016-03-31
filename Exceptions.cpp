@@ -5,9 +5,6 @@
 
 #include "Exceptions.h"
 
-using std::string;
-using std::ostream;
-using std::endl;
 
 namespace Clustering {
     OutOfBoundsEx::OutOfBoundsEx(unsigned int c, int r) {
@@ -24,12 +21,12 @@ namespace Clustering {
         return __rhs;
     }
 
-    string OutOfBoundsEx::getName() const {
+    std::string OutOfBoundsEx::getName() const {
         return __name;
     }
 
-    ostream &operator<<(ostream &os, const OutOfBoundsEx &ex) {
-        os << ex.__name << ": " << ex.__current << " : " << ex.__rhs << endl;
+    std::ostream &operator<<(std::ostream &os, const OutOfBoundsEx &ex) {
+        os << ex.__name << ": " << ex.__current << " : " << ex.__rhs << std::endl;
         return os;
     }
 
@@ -48,12 +45,12 @@ namespace Clustering {
         return __rhs;
     }
 
-    string DimensionalityMismatchEx::getName() const {
+    std::string DimensionalityMismatchEx::getName() const {
         return __name;
     }
 
-    ostream &operator<<(ostream &os, const DimensionalityMismatchEx &ex) {
-        os << ex.__name << ": " << ex.__current << " : " << ex.__rhs << endl;
+    std::ostream &operator<<(std::ostream &os, const DimensionalityMismatchEx &ex) {
+        os << ex.__name << ": " << ex.__current << " : " << ex.__rhs << std::endl;
         return os;
     }
 
@@ -62,31 +59,31 @@ namespace Clustering {
         __name = "ZeroClustersEx";
     }
 
-    string ZeroClustersEx::getName() const {
+    std::string ZeroClustersEx::getName() const {
         return __name;
     }
 
-    ostream &operator<<(ostream &os, const ZeroClustersEx &ex) {
-        os << ex.__name << endl;
+    std::ostream &operator<<(std::ostream &os, const ZeroClustersEx &ex) {
+        os << ex.__name << std::endl;
         return os;
     }
 
 
-    DataFileOpenEx::DataFileOpenEx(string filename) {
+    DataFileOpenEx::DataFileOpenEx(std::string filename) {
         __name = "DataFileOpenEx";
         __filename = filename;
     }
 
-    string DataFileOpenEx::getFilename() const {
+    std::string DataFileOpenEx::getFilename() const {
         return __filename;
     }
 
-    string DataFileOpenEx::getName() const {
+    std::string DataFileOpenEx::getName() const {
         return __name;
     }
 
-    ostream &operator<<(ostream &os, const DataFileOpenEx &ex) {
-        os << ex.__name << ": " << ex.__filename << endl;
+    std::ostream &operator<<(std::ostream &os, const DataFileOpenEx &ex) {
+        os << ex.__name << ": " << ex.__filename << std::endl;
         return os;
     }
 
@@ -95,12 +92,12 @@ namespace Clustering {
         __name = "ZeroDimensionsEx";
     }
 
-    string ZeroDimensionsEx::getName() const {
+    std::string ZeroDimensionsEx::getName() const {
         return __name;
     }
 
-    ostream &operator<<(ostream &os, const ZeroDimensionsEx &ex) {
-        os << ex.__name << endl;
+    std::ostream &operator<<(std::ostream &os, const ZeroDimensionsEx &ex) {
+        os << ex.__name << std::endl;
         return os;
     }
 
@@ -109,12 +106,12 @@ namespace Clustering {
         __name = "EmptyClusterEx";
     }
 
-    string EmptyClusterEx::getName() const {
+    std::string EmptyClusterEx::getName() const {
         return __name;
     }
 
-    ostream &operator<<(ostream &os, const EmptyClusterEx &ex) {
-        os << ex.__name << endl;
+    std::ostream &operator<<(std::ostream &os, const EmptyClusterEx &ex) {
+        os << ex.__name << std::endl;
         return os;
     }
 

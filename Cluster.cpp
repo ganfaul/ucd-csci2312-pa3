@@ -2,19 +2,13 @@
 // Created by Gannon Faul on 3/25/16.
 //
 
-#include <iostream>
+#include <sstream>
 #include <iomanip>
 #include <string>
-#include <sstream>
+#include <limits>
+
 #include "Cluster.h"
 #include "Exceptions.h"
-
-using std::string;
-using std::stringstream;
-using std::numeric_limits;
-using std::getline;
-using std::cerr;
-using std::endl;
 
 namespace Clustering {
 
@@ -89,7 +83,7 @@ namespace Clustering {
 
     void Cluster::Centroid::toInfinity() {
         for (int i = 0; i < __dimensions; i++) {
-            __p[i] = numeric_limits<double>::max();
+            __p[i] = std::numeric_limits<double>::max();
         }
     }
 
@@ -287,7 +281,7 @@ namespace Clustering {
         bool pick;
         if (k < __size) {
             if (k <= 100) {
-                *pointArray[0] = __points->point;
+                *(pointArray[0]) = __points->point;
                 for (int i = 1; i < k; i++) {
                     dist1 = 0;
                     maxDistPoint = 0;
@@ -296,8 +290,8 @@ namespace Clustering {
                         pick = false;
 
                         for (int l = 0; l < i; l++) {
-                            dist2 = dist2 + ((*this)[j]).distanceTo(*pointArray[l]);
-                            if ((*this)[j] == *pointArray[l]) {
+                            dist2 = dist2 + ((*this)[j]).distanceTo(*(pointArray[l]));
+                            if ((*this)[j] == *(pointArray[l])) {
                                 pick = true;
                             }
                         }
@@ -311,21 +305,21 @@ namespace Clustering {
                             }
                         }
                     }
-                    *pointArray[i] = (*this)[maxDistPoint];
+                    *(pointArray[i]) = (*this)[maxDistPoint];
                 }
             } else {
                 for (int i = 0; i < k; i++) {
-                    *pointArray[i] = (*this)[i];
+                    *(pointArray[i]) = (*this)[i];
                 }
             }
         } else {
             for (int i = 0; i < __size; i++) {
-                *pointArray[i] = (*this)[i];
+                *(pointArray[i]) = (*this)[i];
             }
             if (k != __size) {
                 for(int i = __size; i < k; i++) {
                     for (int j = 0; j < __dimensionality; j++) {
-                        pointArray[i]->setValue(j, numeric_limits<double>::max());
+                        pointArray[i]->setValue(j, std::numeric_limits<double>::max());
                     }
                 }
             }
@@ -410,32 +404,29 @@ namespace Clustering {
     std::ostream &operator<<(std::ostream &out, const Cluster &c) {
         out << std::setprecision(20);
         for (int i = 0; i < c.getSize(); i++) {
-            out << c[i] << " " << ":" << " " << c.__id << endl;
+            out << c[i] << " " << POINT_CLUSTER_ID_DELIM << " " << c.__id << std::endl;
         }
         return out;
     }
 
     std::istream &operator>>(std::istream &in, Cluster &c) {
-        while(!in.eof()) {
-            string string1;
-            getline(in, string1);
-            int dim_ty = c.getDimensionality();
-            if (string1.length() > dim_ty) {
-                Point newPoint(dim_ty);
-                stringstream stringstream1(string1);
-
-                try {
-                    stringstream1 >> newPoint;
-                    c.add(newPoint);
-                }
-                catch (DimensionalityMismatchEx &e) {
-                    cerr << e << endl;
-                    newPoint.rewindIdGen();
-                }
-                catch (...) {
-                    cerr << "Caught Exception" << endl;
-                    newPoint.rewindIdGen();
-                }
+        std::string string1;
+        while (getline(in,string1)) {
+            int dim = (int) std::count(string1.begin(), string1.end(), Point::POINT_VALUE_DELIM);
+            Point newPoint(++dim);
+            std::stringstream inputStringStream(string1);
+            try {
+                inputStringStream >> newPoint;
+                c.add(newPoint);
+                c.add(newPoint);
+            }
+            catch (DimensionalityMismatchEx& e) {
+                std::cerr << "Caught an exception of type: " << e << std::endl;
+                newPoint.rewindIdGen();
+            }
+            catch (...) {
+                std::cerr << "Caught an unknown exception" << std::endl;
+                newPoint.rewindIdGen();
             }
         }
         return in;
@@ -502,9 +493,7 @@ namespace Clustering {
         }
     }
 
-    Cluster::Move::Move(const Point &p, Cluster &from, Cluster &to) : __p(p), __from(from), __to(to) {
-
-    }
+    Cluster::Move::Move(const Point &p, Cluster &from, Cluster &to) : __p(p), __from(from), __to(to) { }
 
     void Cluster::Move::perform() {
         if (__from.contains(__p)) {

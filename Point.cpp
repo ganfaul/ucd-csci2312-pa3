@@ -2,20 +2,17 @@
 // Created by Gannon Faul on 3/25/16.
 //
 
-#include<iostream>
-#include<cmath>
-#include<sstream>
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <sstream>
 
 using std::sqrt;
 using std::pow;
-using std::ostream;
-using std::istream;
-using std::string;
-using std::stringstream;
-using std::count;
 
 #include"Point.h"
 #include"Exceptions.h"
+
 namespace Clustering {
 
 
@@ -299,7 +296,7 @@ namespace Clustering {
         return (rhs <= lhs);
     }
 
-    ostream &operator<<(std::ostream &out, const Point &p) {
+    std::ostream &operator<<(std::ostream &out, const Point &p) {
         out << p.getValue(0);
         for (int i = 1; i < p.getDims(); i++) {
             out << ", " << p.getValue(i);
@@ -307,17 +304,17 @@ namespace Clustering {
         return out;
     }
 
-    istream &operator>>(std::istream &in, Point &p) {
-        string string1;
-        getline(in, string1);
-        stringstream stream1(string1);
-        int dim1 = count(string1.begin(), string1.end(), p.POINT_VALUE_DELIM);
+    std::istream &operator>>(std::istream &in, Point &p) {
+        std::string string1;
+        std::getline(in, string1);
+        std::stringstream stream1(string1);
+        int dim1 = std::count(string1.begin(), string1.end(), p.POINT_VALUE_DELIM);
         dim1++;
         if (p.getDims() == dim1){
             for (int i = 0; i < p.getDims(); i++) {
-                string pointVal;
-                getline(stream1, pointVal, ',');
-                stringstream stream2(pointVal);
+                std::string pointVal;
+                std::getline(stream1, pointVal, ',');
+                std::stringstream stream2(pointVal);
                 stream2 >> p.__values[i];
             }
         } else {

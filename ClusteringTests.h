@@ -96,7 +96,7 @@ void test_cluster_initselection(ErrorContext &ec, unsigned int numRuns);
 // operator>>, operator<<
 void test_cluster_IO(ErrorContext &ec, unsigned int numRuns);
 
-/*
+
 
 // - - - - - - - - - Tests: class KMeans - - - - - - - - - -
 
@@ -117,5 +117,5 @@ void test_kmeans_largepoints(ErrorContext &ec, unsigned int numRuns);
 
 // Large k, less than number of points
 void test_kmeans_toomanyclusters(ErrorContext &ec, unsigned int numRuns);
-*/
+
 #endif //CLUSTERING_CLUSTERINGTESTS_H

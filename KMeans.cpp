@@ -12,29 +12,31 @@
 #include "Exceptions.h"
 
 namespace Clustering {
-    KMeans::KMeans(unsigned int dim,
-                   unsigned int k,
-                   std::string filename,
-                   unsigned int maxIter) {
+    KMeans::KMeans(unsigned int dim, unsigned int k, std::string filename, unsigned int maxIter) {
         if(k != 0) {
-            std::ifstream file(filename);
-            if(file) {
+            __iFileName = filename;
+            std::ifstream file(__iFileName);
+            if(__iFileName == "") {
+                throw DataFileOpenEx(__iFileName);
+            }
+            if (file) {
                 __dimensionality = dim;
                 __k = k;
                 __maxIter = maxIter;
                 __numNonempty = 1;
-
-                __clusters = new Cluster *[k];
+                __clusters = new Cluster *[__k];
                 for (int i = 0; i < __k; i++) {
                     __clusters[i] = new Cluster(__dimensionality);
                 }
-                file >> *__clusters[0];
-                __initCentroids = new Point *[k];
+                file >> *(__clusters[0]);
+                file.close();
+                __initCentroids = new Point *[__k];
                 for (int i = 0; i < __k; i++) {
-                    __clusters[0]->pickCentroids(k, __initCentroids);
+                    __initCentroids[i] = new Point(__dimensionality);
                 }
+                __clusters[0]->pickCentroids(__k, __initCentroids);
             } else {
-                throw DataFileOpenEx(filename);
+                throw DataFileOpenEx(__iFileName);
             }
         } else {
             throw ZeroClustersEx();
@@ -67,11 +69,11 @@ namespace Clustering {
     }
 
     Cluster &KMeans::operator[](unsigned int u) {
-        return *__clusters[u];
+        return *(__clusters[u]);
     }
 
     const Cluster &KMeans::operator[](unsigned int u) const {
-        return *__clusters[u];
+        return *(__clusters[u]);
     }
 
     std::ostream &operator<<(std::ostream &os, const KMeans &kmeans) {
