@@ -2892,9 +2892,8 @@ void test_kmeans_smoketest(ErrorContext &ec) {
 
     pass = true;
     for (int i = 0; i < 10; i ++) {
-        std::cout << std:: endl << "HELLO" << std::endl;
         KMeans kmeans(5, 3, "points4.csv", 20);
-        std::cout << std:: endl << "Goodbye" << std::endl;
+
     }
 
     ec.result(pass);

@@ -84,6 +84,5 @@ namespace Clustering {
     }
 
     void KMeans::run() {
-
     }
 }
